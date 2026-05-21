@@ -6,16 +6,41 @@ type SaveState = "idle" | "saving" | "saved" | "error";
 const props = withDefaults(defineProps<{
   deckTitle?: string;
   saveState?: SaveState;
+  shareUrl?: string;
+  readOnly?: boolean;
 }>(), {
   deckTitle: "",
   saveState: "idle",
+  shareUrl: "",
+  readOnly: false,
 });
 
 defineEmits<{
   (e: "update:deckTitle", value: string): void;
   (e: "present"): void;
-  (e: "share"): void;
 }>();
+
+const copied = ref(false);
+let copyResetTimer: ReturnType<typeof setTimeout> | null = null;
+
+function resetCopied() {
+  copied.value = false;
+}
+
+async function handleShare() {
+  if (!props.shareUrl)
+    return;
+  try {
+    await navigator.clipboard.writeText(props.shareUrl);
+    copied.value = true;
+    if (copyResetTimer)
+      clearTimeout(copyResetTimer);
+    copyResetTimer = setTimeout(resetCopied, 1800);
+  }
+  catch {
+    copied.value = false;
+  }
+}
 
 const saveLabel = computed(() => {
   switch (props.saveState) {
@@ -54,10 +79,13 @@ const saveIcon = computed(() => {
         :value="deckTitle"
         type="text"
         placeholder="Untitled deck"
-        class="w-[260px] rounded-input border border-transparent bg-transparent px-2 py-1 text-sm font-medium text-text outline-none transition placeholder:text-text-secondary hover:border-border focus:border-border focus:bg-background"
+        :readonly="readOnly"
+        :tabindex="readOnly ? -1 : 0"
+        class="w-[260px] rounded-input border border-transparent bg-transparent px-2 py-1 text-sm font-medium text-text outline-none transition placeholder:text-text-secondary read-only:cursor-default read-only:hover:border-transparent hover:border-border focus:border-border focus:bg-background"
         @input="$emit('update:deckTitle', ($event.target as HTMLInputElement).value)"
       >
       <Icon
+        v-if="!readOnly"
         name="i-lucide-chevron-down"
         class="text-text-secondary"
         size="14"
@@ -90,11 +118,17 @@ const saveIcon = computed(() => {
 
       <button
         type="button"
-        class="flex items-center gap-1.5 rounded-input border border-border bg-surface px-3 py-1.5 text-[13px] font-medium text-text transition hover:bg-background"
-        @click="$emit('share')"
+        :disabled="!shareUrl"
+        :title="shareUrl ? 'Copy share link' : 'Save the deck first'"
+        class="flex items-center gap-1.5 rounded-input border border-border bg-surface px-3 py-1.5 text-[13px] font-medium text-text transition hover:bg-background disabled:opacity-60"
+        @click="handleShare"
       >
-        <Icon name="i-lucide-share-2" size="14" />
-        Share
+        <Icon
+          :name="copied ? 'i-lucide-check' : 'i-lucide-share-2'"
+          :class="copied && 'text-primary'"
+          size="14"
+        />
+        {{ copied ? "Link copied" : "Share" }}
       </button>
 
       <button
