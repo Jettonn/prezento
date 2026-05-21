@@ -14,6 +14,12 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
   ],
   css: ["~/assets/css/main.css"],
+  fonts: {
+    families: [
+      { name: "Inter", provider: "google", weights: [400, 500, 600, 700] },
+      { name: "JetBrains Mono", provider: "google", weights: [400, 500] },
+    ],
+  },
   eslint: {
     config: {
       standalone: false,
