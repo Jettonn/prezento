@@ -6,12 +6,16 @@ type SaveState = "idle" | "saving" | "saved" | "error";
 const props = withDefaults(defineProps<{
   deckTitle?: string;
   saveState?: SaveState;
+  savedAt?: Date | null;
   shareUrl?: string;
+  editUrl?: string;
   readOnly?: boolean;
 }>(), {
   deckTitle: "",
   saveState: "idle",
+  savedAt: null,
   shareUrl: "",
+  editUrl: "",
   readOnly: false,
 });
 
@@ -42,10 +46,14 @@ async function handleShare() {
   }
 }
 
+const timeAgo = useTimeAgo(computed(() => props.savedAt ?? new Date()), {
+  updateInterval: 30_000,
+});
+
 const saveLabel = computed(() => {
   switch (props.saveState) {
     case "saving": return "Saving…";
-    case "saved": return "Saved just now";
+    case "saved": return props.savedAt ? `Saved ${timeAgo.value}` : "Saved";
     case "error": return "Save failed";
     default: return "";
   }
@@ -130,6 +138,15 @@ const saveIcon = computed(() => {
         />
         {{ copied ? "Link copied" : "Share" }}
       </button>
+
+      <NuxtLink
+        v-if="editUrl"
+        :to="editUrl"
+        class="flex items-center gap-1.5 rounded-input border border-border bg-surface px-3 py-1.5 text-[13px] font-medium text-text transition hover:bg-background"
+      >
+        <Icon name="i-lucide-pencil" size="14" />
+        Edit
+      </NuxtLink>
 
       <button
         type="button"

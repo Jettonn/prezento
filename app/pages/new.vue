@@ -33,7 +33,6 @@ toolkit for builders.
 
 const markdown = ref(SAMPLE);
 const deckTitle = ref("");
-const cursor = ref({ line: 1, col: 1, words: 0 });
 
 const slides = computed(() =>
   parseDeck(markdown.value).map(s => ({ number: s.index + 1, title: s.title })),
@@ -55,7 +54,7 @@ async function handleCreate() {
         title: deckTitle.value.trim() || undefined,
       },
     });
-    await navigateTo(`/d/${slug}`);
+    await navigateTo(`/d/${slug}/edit`);
   }
   catch (err) {
     createError.value = err instanceof Error ? err.message : "Could not create deck";
@@ -71,70 +70,29 @@ async function handleCreate() {
     <div class="flex min-h-0 flex-1">
       <AppSidebar :slides="slides" :selected-index="0" />
 
-      <main class="grid min-w-0 flex-1 grid-cols-2">
-        <section class="flex min-w-0 flex-col border-r border-border bg-surface">
-          <div class="flex items-center gap-2 border-b border-border px-3 py-2">
-            <button
-              type="button"
-              class="flex items-center gap-1.5 rounded-input bg-background px-2.5 py-1 text-[13px] font-medium text-text"
-            >
-              presentation.md
-              <span class="h-1.5 w-1.5 rounded-full bg-primary" />
-            </button>
-          </div>
+      <DeckEditor v-model="markdown">
+        <template #footer-action>
+          <button
+            type="button"
+            :disabled="isCreating || markdown.trim().length === 0"
+            class="flex items-center gap-1.5 rounded-input bg-primary px-3 py-1.5 text-[12px] font-medium text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+            @click="handleCreate"
+          >
+            <Icon
+              :name="isCreating ? 'i-lucide-loader-2' : 'i-lucide-arrow-right'"
+              :class="isCreating && 'animate-spin'"
+              size="12"
+            />
+            {{ isCreating ? "Creating…" : "Create deck" }}
+          </button>
+        </template>
 
-          <div class="min-h-0 flex-1 overflow-hidden">
-            <ClientOnly>
-              <MarkdownEditor v-model="markdown" @cursor="cursor = $event" />
-              <template #fallback>
-                <div class="flex h-full items-center justify-center text-sm text-text-secondary">
-                  Loading editor…
-                </div>
-              </template>
-            </ClientOnly>
-          </div>
-
-          <div class="flex items-center justify-between border-t border-border px-3 py-2 text-[12px] text-text-secondary">
-            <span class="font-mono">
-              Ln {{ cursor.line }}, Col {{ cursor.col }} &nbsp;·&nbsp; Markdown &nbsp;·&nbsp; {{ cursor.words }} words
-            </span>
-            <button
-              type="button"
-              :disabled="isCreating || markdown.trim().length === 0"
-              class="flex items-center gap-1.5 rounded-input bg-primary px-3 py-1.5 text-[12px] font-medium text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
-              @click="handleCreate"
-            >
-              <Icon
-                :name="isCreating ? 'i-lucide-loader-2' : 'i-lucide-arrow-right'"
-                :class="isCreating && 'animate-spin'"
-                size="12"
-              />
-              {{ isCreating ? "Creating…" : "Create deck" }}
-            </button>
-          </div>
-        </section>
-
-        <section class="flex min-w-0 flex-col">
-          <div class="flex items-center gap-2 border-b border-border bg-surface px-3 py-2">
-            <button
-              type="button"
-              class="flex h-7 w-7 items-center justify-center rounded-input border border-border bg-background text-text"
-              title="Desktop"
-            >
-              <Icon name="i-lucide-monitor" size="14" />
-            </button>
-            <span class="text-[12px] text-text-secondary">Live preview</span>
-          </div>
-
-          <div class="min-h-0 flex-1 overflow-auto p-6">
-            <DeckRender :markdown="markdown" />
-          </div>
-
-          <div v-if="createError" class="border-t border-border bg-surface px-4 py-2 text-[12px] text-red-600">
+        <template v-if="createError" #preview-footer>
+          <div class="border-t border-border bg-surface px-4 py-2 text-[12px] text-red-600">
             {{ createError }}
           </div>
-        </section>
-      </main>
+        </template>
+      </DeckEditor>
     </div>
   </div>
 </template>

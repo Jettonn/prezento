@@ -35,6 +35,7 @@ const slides = computed(() =>
     <AppTopBar
       :deck-title="displayTitle"
       :share-url="shareUrl"
+      :edit-url="`/d/${slug}/edit`"
       read-only
     />
 
