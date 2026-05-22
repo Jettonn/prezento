@@ -28,6 +28,13 @@ const slides = computed(() =>
     title: s.title,
   })),
 );
+
+const canPresent = computed(() => (deck.value?.markdown ?? "").trim().length > 0);
+const router = useRouter();
+
+function enterPresenter() {
+  router.push(`/d/${slug.value}/present`);
+}
 </script>
 
 <template>
@@ -36,7 +43,9 @@ const slides = computed(() =>
       :deck-title="displayTitle"
       :share-url="shareUrl"
       :edit-url="`/d/${slug}/edit`"
+      :can-present="canPresent"
       read-only
+      @present="enterPresenter"
     />
 
     <div class="flex min-h-0 flex-1">

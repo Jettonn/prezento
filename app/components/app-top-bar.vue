@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<{
   shareUrl?: string;
   editUrl?: string;
   readOnly?: boolean;
+  canPresent?: boolean;
 }>(), {
   deckTitle: "",
   saveState: "idle",
@@ -17,6 +18,7 @@ const props = withDefaults(defineProps<{
   shareUrl: "",
   editUrl: "",
   readOnly: false,
+  canPresent: false,
 });
 
 defineEmits<{
@@ -115,9 +117,9 @@ const saveIcon = computed(() => {
     <div class="ml-auto flex items-center gap-2">
       <button
         type="button"
-        disabled
+        :disabled="!canPresent"
         class="flex items-center gap-1.5 rounded-input border border-border bg-surface px-3 py-1.5 text-[13px] font-medium text-text transition hover:bg-background disabled:opacity-60"
-        title="Available after first slide"
+        :title="canPresent ? 'Enter presenter mode' : 'Available after first slide'"
         @click="$emit('present')"
       >
         <Icon name="i-lucide-play" size="14" />

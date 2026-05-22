@@ -18,6 +18,7 @@ logs
 .fleet
 .idea
 .claude
+.playwright-mcp
 
 # Local env files
 .env

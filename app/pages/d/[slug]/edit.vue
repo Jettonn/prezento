@@ -32,6 +32,13 @@ const slides = computed(() =>
   parseDeck(markdown.value).map(s => ({ number: s.index + 1, title: s.title })),
 );
 
+const canPresent = computed(() => markdown.value.trim().length > 0);
+const router = useRouter();
+
+function enterPresenter() {
+  router.push(`/d/${slug.value}/present`);
+}
+
 async function performSave(): Promise<void> {
   saveState.value = "saving";
   try {
@@ -64,6 +71,8 @@ watch([markdown, deckTitle], () => {
       :save-state="saveState"
       :saved-at="savedAt"
       :share-url="shareUrl"
+      :can-present="canPresent"
+      @present="enterPresenter"
     />
 
     <div class="flex min-h-0 flex-1">
