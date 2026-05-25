@@ -11,6 +11,9 @@ const props = withDefaults(defineProps<{
   editUrl?: string;
   readOnly?: boolean;
   canPresent?: boolean;
+  isOwner?: boolean;
+  isPublic?: boolean;
+  visibilityBusy?: boolean;
 }>(), {
   deckTitle: "",
   saveState: "idle",
@@ -19,11 +22,15 @@ const props = withDefaults(defineProps<{
   editUrl: "",
   readOnly: false,
   canPresent: false,
+  isOwner: false,
+  isPublic: false,
+  visibilityBusy: false,
 });
 
 defineEmits<{
   (e: "update:deckTitle", value: string): void;
   (e: "present"): void;
+  (e: "toggleVisibility"): void;
 }>();
 
 const copied = ref(false);
@@ -116,6 +123,22 @@ const saveIcon = computed(() => {
 
     <div class="ml-auto flex items-center gap-2">
       <button
+        v-if="isOwner"
+        type="button"
+        :disabled="visibilityBusy"
+        class="flex items-center gap-1.5 rounded-input border border-border bg-surface px-3 py-1.5 text-[13px] font-medium text-text transition hover:bg-background disabled:opacity-60"
+        :title="isPublic ? 'Anyone with the link can view. Click to make private.' : 'Only you can see this deck. Click to share.'"
+        @click="$emit('toggleVisibility')"
+      >
+        <Icon
+          :name="visibilityBusy ? 'i-lucide-loader-2' : (isPublic ? 'i-lucide-globe' : 'i-lucide-lock')"
+          :class="[visibilityBusy && 'animate-spin', isPublic && 'text-primary']"
+          size="14"
+        />
+        {{ isPublic ? "Public" : "Private" }}
+      </button>
+
+      <button
         type="button"
         :disabled="!canPresent"
         class="flex items-center gap-1.5 rounded-input border border-border bg-surface px-3 py-1.5 text-[13px] font-medium text-text transition hover:bg-background disabled:opacity-60"
@@ -127,6 +150,7 @@ const saveIcon = computed(() => {
       </button>
 
       <button
+        v-if="isPublic || !isOwner"
         type="button"
         :disabled="!shareUrl"
         :title="shareUrl ? 'Copy share link' : 'Save the deck first'"

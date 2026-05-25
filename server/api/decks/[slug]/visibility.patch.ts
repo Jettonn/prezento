@@ -5,8 +5,7 @@ import db from "~/lib/db";
 import { deck } from "~/lib/db/schema";
 
 const BodySchema = z.object({
-  markdown: z.string().max(200_000),
-  title: z.string().trim().max(200).nullish(),
+  isPublic: z.boolean(),
 });
 
 export default defineEventHandler(async (event) => {
@@ -30,17 +29,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 403, statusMessage: "Forbidden" });
   }
 
-  const normalizedTitle = body.title == null
-    ? null
-    : (body.title.length === 0 ? null : body.title);
-
   await db
     .update(deck)
-    .set({
-      markdown: body.markdown,
-      title: normalizedTitle,
-    })
+    .set({ isPublic: body.isPublic })
     .where(eq(deck.id, found.id));
 
-  return { ok: true, savedAt: Date.now() };
+  return { isPublic: body.isPublic };
 });

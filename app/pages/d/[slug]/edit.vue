@@ -14,8 +14,14 @@ if (error.value || !data.value) {
   throw createError({ statusCode: 404, statusMessage: "Deck not found" });
 }
 
+if (!data.value.isOwner) {
+  await navigateTo(`/d/${slug.value}`, { replace: true });
+}
+
 const markdown = ref(data.value.markdown);
 const deckTitle = ref(data.value.title ?? "");
+const isPublic = ref(data.value.isPublic);
+const visibilityBusy = ref(false);
 
 const saveState = ref<SaveState>("idle");
 const savedAt = ref<Date | null>(null);
@@ -62,6 +68,26 @@ const debouncedSave = useDebounceFn(performSave, 1000);
 watch([markdown, deckTitle], () => {
   debouncedSave();
 });
+
+async function toggleVisibility(): Promise<void> {
+  if (visibilityBusy.value)
+    return;
+  visibilityBusy.value = true;
+  const next = !isPublic.value;
+  try {
+    const res = await $fetch<{ isPublic: boolean }>(`/api/decks/${slug.value}/visibility`, {
+      method: "PATCH",
+      body: { isPublic: next },
+    });
+    isPublic.value = res.isPublic;
+  }
+  catch {
+    // leave state unchanged on failure
+  }
+  finally {
+    visibilityBusy.value = false;
+  }
+}
 </script>
 
 <template>
@@ -72,7 +98,11 @@ watch([markdown, deckTitle], () => {
       :saved-at="savedAt"
       :share-url="shareUrl"
       :can-present="canPresent"
+      is-owner
+      :is-public="isPublic"
+      :visibility-busy="visibilityBusy"
       @present="enterPresenter"
+      @toggle-visibility="toggleVisibility"
     />
 
     <div class="flex min-h-0 flex-1">
@@ -81,8 +111,8 @@ watch([markdown, deckTitle], () => {
       <DeckEditor v-model="markdown">
         <template #footer-action>
           <span class="flex items-center gap-1.5 text-text-secondary/80">
-            <Icon name="i-lucide-info" size="12" />
-            Anyone with this link can edit · ownership coming soon
+            <Icon :name="isPublic ? 'i-lucide-globe' : 'i-lucide-lock'" size="12" />
+            {{ isPublic ? "Anyone with the link can view this deck" : "Only you can see this deck" }}
           </span>
         </template>
       </DeckEditor>

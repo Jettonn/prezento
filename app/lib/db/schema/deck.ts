@@ -11,7 +11,9 @@ export const deck = sqliteTable(
     title: text(),
     markdown: text().notNull().default(""),
     ownerUserId: int().references(() => user.id, { onDelete: "cascade" }),
+    // HMAC-SHA256 hex of the raw anon cookie token. Raw token stays in the cookie only.
     anonOwnerToken: text(),
+    isPublic: integer({ mode: "boolean" }).default(false).notNull(),
     deletedAt: integer({ mode: "timestamp_ms" }),
     viewCount: integer().default(0).notNull(),
     lastViewedAt: integer({ mode: "timestamp_ms" }),

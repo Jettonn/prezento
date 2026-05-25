@@ -18,6 +18,11 @@ export default defineEventHandler(async (event) => {
     ? body.title
     : deriveDeckTitle(body.markdown);
 
+  const signedInUserId = event.context.user?.id ?? null;
+  const anonTokenHash = signedInUserId
+    ? null
+    : getOrIssueAnonToken(event).hash;
+
   for (let attempt = 0; attempt < 5; attempt++) {
     const slug = generateSlug();
     try {
@@ -25,7 +30,8 @@ export default defineEventHandler(async (event) => {
         slug,
         title: title ?? null,
         markdown: body.markdown,
-        ownerUserId: event.context.user?.id ?? null,
+        ownerUserId: signedInUserId,
+        anonOwnerToken: anonTokenHash,
         createdAt: now,
         updatedAt: now,
       });
