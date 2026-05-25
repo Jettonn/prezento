@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
     if (session?.user) {
       event.context.session = session.session;
       event.context.user = session.user;
+      await claimAnonDecksForUser(event, event.context.user.id);
     }
 
     if (event.path.startsWith("/app") && !session?.user) {

@@ -12,6 +12,10 @@ if (error.value || !deck.value) {
   throw createError({ statusCode: 404, statusMessage: "Deck not found" });
 }
 
+const isOwner = computed(() => deck.value?.isOwner ?? false);
+const isPublic = ref(deck.value?.isPublic ?? false);
+const visibilityBusy = ref(false);
+
 const displayTitle = computed(() => deck.value?.title ?? "Untitled deck");
 
 useHead({ title: () => `${displayTitle.value} · prezento` });
@@ -35,6 +39,26 @@ const router = useRouter();
 function enterPresenter() {
   router.push(`/d/${slug.value}/present`);
 }
+
+async function toggleVisibility(): Promise<void> {
+  if (visibilityBusy.value)
+    return;
+  visibilityBusy.value = true;
+  const next = !isPublic.value;
+  try {
+    const res = await $fetch<{ isPublic: boolean }>(`/api/decks/${slug.value}/visibility`, {
+      method: "PATCH",
+      body: { isPublic: next },
+    });
+    isPublic.value = res.isPublic;
+  }
+  catch {
+    // leave state unchanged on failure
+  }
+  finally {
+    visibilityBusy.value = false;
+  }
+}
 </script>
 
 <template>
@@ -42,10 +66,14 @@ function enterPresenter() {
     <AppTopBar
       :deck-title="displayTitle"
       :share-url="shareUrl"
-      :edit-url="`/d/${slug}/edit`"
+      :edit-url="isOwner ? `/d/${slug}/edit` : ''"
       :can-present="canPresent"
+      :is-owner="isOwner"
+      :is-public="isPublic"
+      :visibility-busy="visibilityBusy"
       read-only
       @present="enterPresenter"
+      @toggle-visibility="toggleVisibility"
     />
 
     <div class="flex min-h-0 flex-1">

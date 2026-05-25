@@ -17,18 +17,27 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Deck not found" });
   }
 
-  await db
-    .update(deck)
-    .set({
-      viewCount: sql`${deck.viewCount} + 1`,
-      lastViewedAt: new Date(),
-    })
-    .where(eq(deck.id, found.id));
+  const isOwner = isDeckOwner(event, found);
+  if (!isOwner && !found.isPublic) {
+    throw createError({ statusCode: 404, statusMessage: "Deck not found" });
+  }
+
+  if (!isOwner) {
+    await db
+      .update(deck)
+      .set({
+        viewCount: sql`${deck.viewCount} + 1`,
+        lastViewedAt: new Date(),
+      })
+      .where(eq(deck.id, found.id));
+  }
 
   return {
     slug: found.slug,
     title: found.title,
     markdown: found.markdown,
+    isPublic: found.isPublic,
+    isOwner,
     createdAt: found.createdAt,
     updatedAt: found.updatedAt,
   };
