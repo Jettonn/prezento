@@ -8,7 +8,10 @@ export default defineEventHandler(async (event) => {
 
     if (session?.user) {
       event.context.session = session.session;
-      event.context.user = session.user;
+      // Better Auth's getSession returns user.id as a string. Our schema stores
+      // it as an INTEGER auto-increment, so every downstream comparison /
+      // equality check needs a number. Coerce once, here.
+      event.context.user = { ...session.user, id: Number(session.user.id) };
       await claimAnonDecksForUser(event, event.context.user.id);
     }
 
