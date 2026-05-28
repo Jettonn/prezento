@@ -9,6 +9,9 @@ const EnvSchema = z.object({
   BETTER_AUTH_URL: z.string(),
   AUTH_GOOGLE_CLIENT_ID: z.string(),
   AUTH_GOOGLE_CLIENT_SECRET: z.string(),
+  RESEND_API_KEY: z.string(),
+  // Resend accepts either "user@domain" or "Name <user@domain>" — validate at send time.
+  RESEND_FROM_EMAIL: z.string().min(1),
 });
 
 export type EnvSchema = z.infer<typeof EnvSchema>;
