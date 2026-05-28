@@ -30,6 +30,10 @@ function otpEmailHtml(otp: string): string {
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
   secret: env.BETTER_AUTH_SECRET,
+  trustedOrigins: [
+    env.BETTER_AUTH_URL,
+    "http://localhost:3000",
+  ],
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
       // Normalize unauthenticated /get-session to a stable { session: null, user: null }
