@@ -29,5 +29,18 @@ export default defineNuxtConfig({
     plugins: [
       tailwindcss() as any,
     ],
+    optimizeDeps: {
+      include: [
+        "@codemirror/commands",
+        "@codemirror/lang-markdown",
+        "@codemirror/language",
+        "@codemirror/state",
+        "@codemirror/view",
+        "@lezer/highlight",
+        "@shikijs/markdown-it",
+        "@slidev/parser",
+        "markdown-it",
+      ],
+    },
   },
 });
