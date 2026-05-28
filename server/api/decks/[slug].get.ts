@@ -19,6 +19,19 @@ export default defineEventHandler(async (event) => {
 
   const isOwner = isDeckOwner(event, found);
   if (!isOwner && !found.isPublic) {
+    // eslint-disable-next-line no-console
+    console.warn("[deck.get] 404 ownership check failed", {
+      slug,
+      hasUser: !!event.context.user,
+      userId: event.context.user?.id ?? null,
+      deckOwnerUserId: found.ownerUserId,
+      deckIsPublic: found.isPublic,
+      hasCookieHeader: !!event.headers.get("cookie"),
+      cookieNames: (event.headers.get("cookie") ?? "")
+        .split(";")
+        .map(s => s.trim().split("=")[0])
+        .filter(Boolean),
+    });
     throw createError({ statusCode: 404, statusMessage: "Deck not found" });
   }
 
