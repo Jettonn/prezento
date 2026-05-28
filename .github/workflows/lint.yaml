@@ -16,6 +16,8 @@ jobs:
       BETTER_AUTH_URL: http://localhost:3000
       AUTH_GOOGLE_CLIENT_ID: ci
       AUTH_GOOGLE_CLIENT_SECRET: ci
+      RESEND_API_KEY: ci
+      RESEND_FROM_EMAIL: ci@example.com
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
