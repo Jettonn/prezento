@@ -112,7 +112,7 @@ function onOtpInput(e: Event) {
 </script>
 
 <template>
-  <main class="flex min-h-screen items-center justify-center bg-background px-6 py-12">
+  <main class="flex min-h-dvh items-center justify-center bg-background px-6 py-12">
     <div class="w-full max-w-md">
       <NuxtLink to="/" class="mb-8 flex items-center justify-center gap-2">
         <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white">

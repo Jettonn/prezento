@@ -69,7 +69,7 @@ function displayTitle(d: DeckRow): string {
 </script>
 
 <template>
-  <div class="min-h-screen bg-background text-text">
+  <div class="min-h-dvh bg-background text-text">
     <header class="border-b border-border bg-surface">
       <div class="mx-auto flex max-w-4xl items-center justify-between px-6 py-3">
         <NuxtLink to="/app" class="flex items-center gap-2">

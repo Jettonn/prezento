@@ -49,7 +49,7 @@ toolkit for builders.
 </script>
 
 <template>
-  <div class="flex h-screen flex-col bg-background">
+  <div class="flex h-dvh flex-col bg-background">
     <AppTopBar
       v-model:deck-title="deckTitle"
       :save-state="saveState"

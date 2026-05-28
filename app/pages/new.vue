@@ -64,7 +64,7 @@ async function handleCreate() {
 </script>
 
 <template>
-  <div class="flex h-screen flex-col bg-background">
+  <div class="flex h-dvh flex-col bg-background">
     <AppTopBar v-model:deck-title="deckTitle" />
 
     <div class="flex min-h-0 flex-1">

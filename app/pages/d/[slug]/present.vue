@@ -115,7 +115,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="presenter flex h-screen w-screen flex-col bg-background">
+  <div class="presenter flex h-dvh w-screen flex-col bg-background">
     <div class="flex min-h-0 flex-1 items-center justify-center px-8 py-8">
       <div class="w-full max-w-[1200px]">
         <DeckSlide

@@ -62,7 +62,7 @@ async function toggleVisibility(): Promise<void> {
 </script>
 
 <template>
-  <div class="flex h-screen flex-col bg-background">
+  <div class="flex h-dvh flex-col bg-background">
     <AppTopBar
       :deck-title="displayTitle"
       :share-url="shareUrl"

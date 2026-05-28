@@ -103,7 +103,7 @@ const ctaLabel = computed(() => (authStore.user ? "Open app" : "Get Started Free
 </script>
 
 <template>
-  <div class="min-h-screen bg-background text-text antialiased">
+  <div class="min-h-dvh bg-background text-text antialiased">
     <!-- Nav -->
     <header class="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur">
       <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
