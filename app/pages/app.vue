@@ -19,6 +19,7 @@ const authStore = useAuthStore();
 
 const { data, refresh, pending } = await useFetch<{ decks: DeckRow[] }>("/api/decks", {
   key: "my-decks",
+  headers: useRequestHeaders(["cookie"]),
 });
 
 const decks = computed<DeckRow[]>(() => data.value?.decks ?? []);

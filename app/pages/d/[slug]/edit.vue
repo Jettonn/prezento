@@ -8,6 +8,7 @@ const slug = computed(() => String(route.params.slug));
 
 const { data, error } = await useFetch(`/api/decks/${slug.value}`, {
   key: `deck-${slug.value}-edit`,
+  headers: useRequestHeaders(["cookie"]),
 });
 
 if (error.value || !data.value) {
