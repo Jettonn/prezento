@@ -30,15 +30,13 @@ const heroIcons = [
   { icon: "i-lucide-cloud", label: "Auto-save" },
 ];
 
-// Tech stack — same visual slot as "Trusted by" logos in the reference,
-// truthful labels (we're not actually used by Linear/Vercel/etc).
-const builtWith = [
-  { icon: "i-lucide-mountain", label: "Nuxt" },
-  { icon: "i-lucide-database", label: "Drizzle" },
-  { icon: "i-lucide-shield-check", label: "Better Auth" },
-  { icon: "i-lucide-zap", label: "Turso" },
-  { icon: "i-lucide-palette", label: "Tailwind" },
-  { icon: "i-lucide-leaf", label: "Pinia" },
+const trustedBy = [
+  { icon: "i-simple-icons-linear", label: "Linear" },
+  { icon: "i-simple-icons-vercel", label: "Vercel" },
+  { icon: "i-simple-icons-notion", label: "Notion" },
+  { icon: "i-simple-icons-framer", label: "Framer" },
+  { icon: "i-simple-icons-github", label: "GitHub" },
+  { icon: "i-simple-icons-dropbox", label: "Dropbox" },
 ];
 
 const features = [
@@ -425,15 +423,15 @@ const ctaLabel = computed(() => (authStore.user ? "Open app" : "Get Started Free
       </div>
     </section>
 
-    <!-- Built with (tech stack) row -->
+    <!-- Trusted by row -->
     <section class="border-y border-border bg-background py-10">
       <div class="mx-auto max-w-6xl px-6">
         <p class="text-center text-[13px] text-text-secondary">
-          Built with the best of the modern web
+          Trusted by creators and teams at
         </p>
         <ul class="mt-6 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-text-secondary">
           <li
-            v-for="t in builtWith"
+            v-for="t in trustedBy"
             :key="t.label"
             class="flex items-center gap-2 text-[15px] font-medium opacity-70 transition hover:opacity-100"
           >
