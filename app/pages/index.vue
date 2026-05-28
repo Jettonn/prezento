@@ -6,9 +6,6 @@ const authStore = useAuthStore();
 const navLinks = [
   { label: "Features", href: "#features" },
   { label: "Templates", href: "#templates" },
-  { label: "Pricing", href: "#" },
-  { label: "Docs", href: "#" },
-  { label: "Changelog", href: "#" },
 ];
 
 const heroSlides = [
