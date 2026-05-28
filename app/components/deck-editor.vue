@@ -17,8 +17,8 @@ const cursor = ref<Cursor>({ line: 1, col: 1, words: 0 });
 </script>
 
 <template>
-  <main class="grid min-w-0 flex-1 grid-cols-2">
-    <section class="flex min-w-0 flex-col border-r border-border bg-surface">
+  <main class="grid min-h-0 min-w-0 flex-1 grid-cols-2">
+    <section class="flex min-h-0 min-w-0 flex-col border-r border-border bg-surface">
       <div class="flex items-center gap-2 border-b border-border px-3 py-2">
         <button
           type="button"
@@ -52,7 +52,7 @@ const cursor = ref<Cursor>({ line: 1, col: 1, words: 0 });
       </div>
     </section>
 
-    <section class="flex min-w-0 flex-col">
+    <section class="flex min-h-0 min-w-0 flex-col">
       <div class="flex items-center gap-2 border-b border-border bg-surface px-3 py-2">
         <button
           type="button"
