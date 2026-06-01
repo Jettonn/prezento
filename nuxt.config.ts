@@ -1,11 +1,25 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite";
 
+import pkg from "./package.json";
+
 import "./app/lib/env";
+
+// Vercel exposes the deployed commit as VERCEL_GIT_COMMIT_SHA at build time.
+// Locally it is undefined, so we fall back to "dev".
+// eslint-disable-next-line node/no-process-env
+const gitSha = process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ?? "dev";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
+  runtimeConfig: {
+    public: {
+      // Exposed to the client. Read anywhere via useRuntimeConfig().public.
+      appVersion: pkg.version,
+      gitSha,
+    },
+  },
   app: {
     head: {
       link: [

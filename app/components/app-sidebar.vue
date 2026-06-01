@@ -14,6 +14,11 @@ withDefaults(defineProps<{
 
 const authStore = useAuthStore();
 
+const config = useRuntimeConfig();
+const appVersion = config.public.appVersion;
+const gitSha = config.public.gitSha;
+const releasesUrl = "https://github.com/Jettonn/prezento/releases";
+
 const bottomNav = [
   { label: "Templates", icon: "i-lucide-layout-template" },
   { label: "Themes", icon: "i-lucide-palette" },
@@ -97,6 +102,18 @@ const bottomNav = [
         size="14"
         class="text-text-secondary"
       />
+    </div>
+
+    <div class="border-t border-border px-3 py-2 text-[11px] text-text-secondary">
+      <a
+        :href="releasesUrl"
+        target="_blank"
+        rel="noopener"
+        class="font-mono transition hover:text-text"
+      >
+        v{{ appVersion }}
+        <span v-if="gitSha !== 'dev'" class="opacity-60">· {{ gitSha }}</span>
+      </a>
     </div>
   </aside>
 </template>
