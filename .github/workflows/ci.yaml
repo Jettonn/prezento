@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+# Shared by every job below. These are dummy values: `pnpm install` runs
+# `postinstall: nuxt prepare`, and typecheck/build need the runtime config to
+# resolve — they are never used to reach real services in CI.
+env:
+  NODE_ENV: test
+  TURSO_DATABASE_URL: file:./local.db
+  TURSO_AUTH_TOKEN: ci
+  BETTER_AUTH_SECRET: ci-secret
+  BETTER_AUTH_URL: http://localhost:3000
+  AUTH_GOOGLE_CLIENT_ID: ci
+  AUTH_GOOGLE_CLIENT_SECRET: ci
+  RESEND_API_KEY: ci
+  RESEND_FROM_EMAIL: ci@example.com
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
