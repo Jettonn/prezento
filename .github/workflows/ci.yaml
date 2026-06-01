@@ -61,3 +61,12 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+
+  # --- LEARNING EXPERIMENT (throwaway) ---
+  # Minimal possible job: no Node, no install — just check out the code and
+  # print a line. Added to watch a brand-new check appear on a PR.
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: echo "I am a new check 👋"
